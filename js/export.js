@@ -19,12 +19,12 @@ const Export = {
     const rows = features.map(f => {
       const c = turf.centroid(f);
       const [lon, lat] = c.geometry.coordinates;
-      return { name: this._name(f), type: f.properties.FEAT_NAME || '', longitude: +lon.toFixed(7), latitude: +lat.toFixed(7) };
+      return { name: this._name(f), type: f.properties.FEAT_NAME || '', unique_id: f.properties.UNIQUE_ID || '', longitude: +lon.toFixed(7), latitude: +lat.toFixed(7) };
     });
 
     if (format === 'csv') {
-      const csv = ['name,type,longitude,latitude',
-        ...rows.map(r => `"${r.name}","${r.type}",${r.longitude},${r.latitude}`)
+      const csv = ['name,type,unique_id,longitude,latitude',
+        ...rows.map(r => `"${r.name}","${r.type}","${r.unique_id}",${r.longitude},${r.latitude}`)
       ].join('\n');
       this._download(csv, 'gbr_centroids.csv', 'text/csv');
     } else {
@@ -36,12 +36,13 @@ const Export = {
     const rows = features.map(f => ({
       name: this._name(f),
       type: f.properties.FEAT_NAME || '',
+      unique_id: f.properties.UNIQUE_ID || '',
       wkt: WKT.fromGeoJSON(f.geometry)
     }));
 
     if (format === 'csv') {
-      const csv = ['name,type,wkt',
-        ...rows.map(r => `"${r.name}","${r.type}","${r.wkt}"`)
+      const csv = ['name,type,unique_id,wkt',
+        ...rows.map(r => `"${r.name}","${r.type}","${r.unique_id}","${r.wkt}"`)
       ].join('\n');
       this._download(csv, 'gbr_wkt.csv', 'text/csv');
     } else {
@@ -56,6 +57,7 @@ const Export = {
       return {
         name: this._name(f),
         type: f.properties.FEAT_NAME || '',
+        unique_id: f.properties.UNIQUE_ID || '',
         buffer_km: bufferKm,
         minX: +minX.toFixed(7),
         minY: +minY.toFixed(7),
@@ -66,9 +68,9 @@ const Export = {
     });
 
     if (format === 'csv') {
-      const csv = ['name,type,buffer_km,minX,minY,maxX,maxY,bbox_wkt',
+      const csv = ['name,type,unique_id,buffer_km,minX,minY,maxX,maxY,bbox_wkt',
         ...rows.map(r =>
-          `"${r.name}","${r.type}",${r.buffer_km},${r.minX},${r.minY},${r.maxX},${r.maxY},"${r.bbox_wkt}"`
+          `"${r.name}","${r.type}","${r.unique_id}",${r.buffer_km},${r.minX},${r.minY},${r.maxX},${r.maxY},"${r.bbox_wkt}"`
         )
       ].join('\n');
       this._download(csv, 'gbr_bbox.csv', 'text/csv');
