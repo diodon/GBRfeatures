@@ -22,7 +22,7 @@ An interactive web map for exploring reef and island features of the **Great Bar
 
 ### Visualisation
 - Toggle between **OpenStreetMap** and **ESRI World Imagery** (satellite) basemaps
-- Colour features by **type** (Reef, Island, Rock, Bank, Cay, Terrestrial Reef) or switch to a **single colour**
+- Colour features by **type** (Reef, Island, Rock, Bank, Cay, Terrestrial Reef) or switch to a **single colour** — the feature-type legend shows/hides automatically
 - **Labels** toggle shows feature names on the map at zoom ≥ 9
 - **Dark / light theme** toggle (sun ☀ / moon 🌙 button in the header) — preference is saved across sessions
 
