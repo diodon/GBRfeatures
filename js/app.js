@@ -71,10 +71,9 @@ const App = {
   async _loadPhase2() {
     try {
       const res = await fetch('data/features.fgb');
-      const buffer = await res.arrayBuffer();
 
       const features = [];
-      for await (const feature of flatgeobuf.deserialize(new Uint8Array(buffer))) {
+      for await (const feature of flatgeobuf.deserialize(res.body)) {
         feature.id = feature.properties._fid;
         features.push(feature);
         this.featuresById.set(+feature.properties._fid, feature);
