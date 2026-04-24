@@ -342,6 +342,7 @@ const App = {
       this._updateLayerColors();
       document.getElementById('color-type').classList.add('active');
       document.getElementById('color-single').classList.remove('active');
+      document.getElementById('legend').style.display = '';
     });
 
     document.getElementById('color-single').addEventListener('click', () => {
@@ -349,6 +350,7 @@ const App = {
       this._updateLayerColors();
       document.getElementById('color-single').classList.add('active');
       document.getElementById('color-type').classList.remove('active');
+      document.getElementById('legend').style.display = 'none';
     });
 
     document.getElementById('toggle-labels').addEventListener('click', () => this.toggleLabels());
