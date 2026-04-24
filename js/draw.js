@@ -180,6 +180,9 @@ const Draw = {
     this._setQueryVisible(false);
     Panel.showPlaceholder();
     App.clearHighlight();
+    const input = document.getElementById('search-input');
+    if (input) { input.value = ''; document.getElementById('search-clear').classList.remove('visible'); }
+    Search._hide();
   },
 
   _setResultBox(html) {
