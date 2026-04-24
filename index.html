@@ -125,7 +125,12 @@
   <div id="panel">
     <div id="panel-header">Feature Details</div>
     <div id="search-box">
-      <input type="text" id="search-input" placeholder="Search features…" autocomplete="off" spellcheck="false">
+      <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="Search features…" autocomplete="off" spellcheck="false">
+        <button id="search-clear" title="Clear search" aria-label="Clear search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
       <div id="search-suggestions"></div>
     </div>
     <div id="panel-content"></div>

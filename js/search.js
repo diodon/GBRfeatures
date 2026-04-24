@@ -4,13 +4,22 @@ const Search = {
 
   init() {
     const input = document.getElementById('search-input');
+    const clearBtn = document.getElementById('search-clear');
 
     input.addEventListener('input', () => {
+      clearBtn.classList.toggle('visible', input.value.length > 0);
       clearTimeout(this._debounceTimer);
       this._debounceTimer = setTimeout(() => {
         this._selectedIndex = -1;
         this._suggest(input.value);
       }, 120);
+    });
+
+    clearBtn.addEventListener('click', () => {
+      input.value = '';
+      clearBtn.classList.remove('visible');
+      this._hide();
+      input.focus();
     });
 
     input.addEventListener('keydown', e => {
