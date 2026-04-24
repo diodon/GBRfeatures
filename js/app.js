@@ -6,6 +6,7 @@ const App = {
   currentBasemap: 'osm',
   _selectedId: null,
   _phase2Ready: false,
+  _labelsVisible: false,
 
   async init() {
     this._initMap();
@@ -63,7 +64,30 @@ const App = {
       }
     });
 
+    this._addLabelLayer();
     this._bindClickEvents('gbr-circles', 'gbr-circle-highlight');
+  },
+
+  _addLabelLayer() {
+    this.map.addLayer({
+      id: 'gbr-labels',
+      type: 'symbol',
+      source: 'gbr',
+      minzoom: 9,
+      layout: {
+        'text-field': ['coalesce', ['get', 'GBR_NAME'], ['get', 'LOC_NAME_S'], ''],
+        'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 14, 14],
+        'text-anchor': 'center',
+        'text-max-width': 8,
+        'text-allow-overlap': false,
+        'visibility': 'none'
+      },
+      paint: {
+        'text-color': '#f1f5f9',
+        'text-halo-color': '#0f172a',
+        'text-halo-width': 1.5
+      }
+    });
   },
 
   // ── Phase 2: full polygons (background) ──────────────────────────────────
@@ -100,7 +124,7 @@ const App = {
   },
 
   _replaceCirclesWithPolygons() {
-    const beforeLayer = this.map.getLayer('bbox-fill') ? 'bbox-fill' : undefined;
+    const beforeLayer = ['bbox-fill', 'gbr-labels'].find(id => this.map.getLayer(id));
 
     if (this.map.getLayer('gbr-circle-highlight')) this.map.removeLayer('gbr-circle-highlight');
     if (this.map.getLayer('gbr-circles'))          this.map.removeLayer('gbr-circles');
@@ -143,8 +167,23 @@ const App = {
       }
     });
 
-    this.map.on('mouseenter', fillLayer, () => { this.map.getCanvas().style.cursor = 'pointer'; });
-    this.map.on('mouseleave', fillLayer, () => { this.map.getCanvas().style.cursor = ''; });
+    this.map.on('mousemove', fillLayer, e => {
+      this.map.getCanvas().style.cursor = 'pointer';
+      const p = e.features[0].properties;
+      const name = p.GBR_NAME || p.LOC_NAME_S || '(unnamed)';
+      const tip = document.getElementById('hover-tooltip');
+      if (tip) {
+        tip.textContent = name;
+        tip.style.left = (e.point.x + 14) + 'px';
+        tip.style.top  = (e.point.y - 10) + 'px';
+        tip.style.display = 'block';
+      }
+    });
+    this.map.on('mouseleave', fillLayer, () => {
+      this.map.getCanvas().style.cursor = '';
+      const tip = document.getElementById('hover-tooltip');
+      if (tip) tip.style.display = 'none';
+    });
   },
 
   _setHighlight(layerId, fid) {
@@ -233,6 +272,18 @@ const App = {
       document.getElementById('color-single').classList.add('active');
       document.getElementById('color-type').classList.remove('active');
     });
+
+    document.getElementById('toggle-labels').addEventListener('click', () => this.toggleLabels());
+  },
+
+  toggleLabels() {
+    this._labelsVisible = !this._labelsVisible;
+    if (this.map.getLayer('gbr-labels')) {
+      this.map.setLayoutProperty('gbr-labels', 'visibility', this._labelsVisible ? 'visible' : 'none');
+    }
+    const btn = document.getElementById('toggle-labels');
+    btn.textContent = this._labelsVisible ? 'On' : 'Off';
+    btn.classList.toggle('active', this._labelsVisible);
   },
 
   _addBasemap(type) {
