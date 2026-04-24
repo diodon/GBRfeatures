@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GBR Feature Explorer</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="https://unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="header">
+  <h1>GBR Feature Explorer</h1>
+  <span class="subtitle">Great Barrier Reef &amp; Torres Strait — 9,133 features</span>
+  <div class="header-controls">
+    <span style="font-size:11px;color:#64748b;margin-right:4px">Basemap:</span>
+    <button class="btn-basemap active" id="basemap-osm">OSM</button>
+    <button class="btn-basemap" id="basemap-esri">Satellite</button>
+    <span style="font-size:11px;color:#64748b;margin-left:8px;margin-right:4px">Colour:</span>
+    <button class="btn-tool active" id="color-type">By Type</button>
+    <button class="btn-tool" id="color-single">Single</button>
+  </div>
+</div>
+
+<div id="main">
+
+  <div id="map-wrap">
+    <div id="map"></div>
+
+    <!-- floating draw toolbar -->
+    <div id="toolbar">
+      <button class="btn-tool" id="btn-draw-polygon" title="Draw polygon — get WKT">&#9651; Polygon</button>
+      <button class="btn-tool" id="btn-draw-bbox" title="Draw bounding box — 2 clicks">&#9633; BBox</button>
+      <div class="sep"></div>
+      <button id="btn-query" title="Query features inside drawn shape">&#128270; Query features</button>
+      <div class="sep"></div>
+      <button class="btn-danger" id="btn-clear-draw" title="Clear drawing and results">&#10005; Clear</button>
+    </div>
+
+    <!-- draw output (WKT / bbox) -->
+    <div id="draw-result"></div>
+
+    <!-- legend -->
+    <div id="legend">
+      <h5>Feature type</h5>
+      <div class="legend-item"><div class="legend-dot" style="background:#2563EB"></div>Reef</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#16A34A"></div>Island</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6B7280"></div>Rock</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#D97706"></div>Bank</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#0891B2"></div>Cay</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#15803D"></div>Terr. Reef</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7C3AED"></div>Other</div>
+    </div>
+
+    <!-- loading overlay -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Loading 9,133 GBR features…</p>
+    </div>
+  </div>
+
+  <!-- side panel -->
+  <div id="panel">
+    <div id="panel-header">Feature Details</div>
+    <div id="panel-content"></div>
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.js"></script>
+<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/wkt.js"></script>
+<script src="js/export.js"></script>
+<script src="js/query.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/draw.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+  // Remove loading overlay once map is ready and data is loaded
+  const _origInit = App.init.bind(App);
+  App.init = async function() {
+    await _origInit();
+    this.map.on('idle', () => {
+      const el = document.getElementById('loading');
+      if (el) el.remove();
+    });
+  };
+</script>
+
+</body>
+</html>

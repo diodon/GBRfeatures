@@ -1,0 +1,7 @@
+# intermediate processing files
+/tmp/
+*.gpkg~
+
+# OS
+.DS_Store
+Thumbs.db
