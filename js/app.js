@@ -66,6 +66,7 @@ const App = {
   async init() {
     this._initMap();
     this._initControls();
+    Search.init();
 
     this.map.on('load', async () => {
       this._addBasemap('osm');
