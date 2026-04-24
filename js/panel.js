@@ -17,8 +17,9 @@ const Panel = {
       </div>`;
   },
 
-  showFeature(feature) {
+  showFeature(feature, geometryReady = false) {
     this._currentFeatures = [feature];
+    this._geometryReady = geometryReady;
     const p = feature.properties;
     const name = p.GBR_NAME || p.LOC_NAME_S || '(unnamed)';
 
@@ -48,6 +49,7 @@ const Panel = {
 
   showQueryResults(features) {
     this._currentFeatures = features;
+    this._geometryReady = App._phase2Ready;
     const count = features.length;
 
     const rows = features.slice(0, 200).map(f => {
@@ -87,6 +89,10 @@ const Panel = {
   },
 
   _exportBlock() {
+    const geoReady = this._geometryReady;
+    const geoTitle = geoReady ? '' : ' title="Available once full geometry loads"';
+    const geoDis   = geoReady ? '' : ' disabled';
+
     return `
       <div class="export-section">
         <h4>Export</h4>
@@ -100,22 +106,22 @@ const Panel = {
         </div>
 
         <div class="export-row">
-          <span>Name + Type + WKT</span>
+          <span>Name + Type + WKT ${geoReady ? '' : '<span class="geo-pending">⏳ loading…</span>'}</span>
           <div class="btn-group">
-            <button class="btn-exp" data-action="wkt" data-fmt="csv">CSV</button>
-            <button class="btn-exp" data-action="wkt" data-fmt="json">JSON</button>
+            <button class="btn-exp" data-action="wkt" data-fmt="csv"${geoDis}${geoTitle}>CSV</button>
+            <button class="btn-exp" data-action="wkt" data-fmt="json"${geoDis}${geoTitle}>JSON</button>
           </div>
         </div>
 
         <div class="export-row">
-          <span>BBox + Buffer</span>
+          <span>BBox + Buffer ${geoReady ? '' : '<span class="geo-pending">⏳ loading…</span>'}</span>
           <div class="buffer-control">
             <input type="range" id="buffer-slider" min="0" max="100" step="0.5" value="${this._bufferKm}">
             <span id="buffer-value">${this._bufferKm} km</span>
           </div>
           <div class="btn-group">
-            <button class="btn-exp" data-action="bbox" data-fmt="csv">CSV</button>
-            <button class="btn-exp" data-action="bbox" data-fmt="json">JSON</button>
+            <button class="btn-exp" data-action="bbox" data-fmt="csv"${geoDis}${geoTitle}>CSV</button>
+            <button class="btn-exp" data-action="bbox" data-fmt="json"${geoDis}${geoTitle}>JSON</button>
           </div>
         </div>
       </div>`;
