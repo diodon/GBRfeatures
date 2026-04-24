@@ -237,7 +237,7 @@ const App = {
     this.map.on('mousemove', fillLayer, e => {
       this.map.getCanvas().style.cursor = 'pointer';
       const p = e.features[0].properties;
-      const name = p.GBR_NAME || p.LOC_NAME_S || '(unnamed)';
+      const name = p.LOC_NAME_S || p.GBR_NAME || '(unnamed)';
       const tip = document.getElementById('hover-tooltip');
       if (tip) {
         tip.textContent = name;
