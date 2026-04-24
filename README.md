@@ -16,13 +16,15 @@ An interactive web map for exploring reef and island features of the **Great Bar
 
 ### Feature interaction
 - Click any feature to inspect its full attributes in the side panel
-- **Hover tooltip** shows the feature name as you move over the map
+- **Hover tooltip** shows the local name and reef ID (`LOC_NAME_S`) of the feature under the cursor
 - **Feature search** — type a name in the search box at the top of the side panel to get live suggestions; select one to zoom the map to that feature and show its details; ↑↓ Enter Esc keyboard navigation supported
+- **Clear** button resets the drawing, the selection, and the search box simultaneously
 
 ### Visualisation
 - Toggle between **OpenStreetMap** and **ESRI World Imagery** (satellite) basemaps
 - Colour features by **type** (Reef, Island, Rock, Bank, Cay, Terrestrial Reef) or switch to a **single colour**
 - **Labels** toggle shows feature names on the map at zoom ≥ 9
+- **Dark / light theme** toggle (sun ☀ / moon 🌙 button in the header) — preference is saved across sessions
 
 ### Drawing tools
 | Tool | What it does |
@@ -121,6 +123,7 @@ GBRfeatures/
 │   ├── query.js            # Spatial filter (centroid-in-polygon)
 │   ├── draw.js             # Draw tools: polygon (GL Draw) + 2-click bbox
 │   ├── search.js           # Live feature-name search with suggestion dropdown
+│   ├── theme.js            # Dark / light theme toggle with localStorage persistence
 │   └── app.js              # MapLibre init, layers, custom controls, events
 ├── data/
 │   ├── centroids.geojson   # Phase 1: 9,133 centroid points (~4 MB) — loads instantly
