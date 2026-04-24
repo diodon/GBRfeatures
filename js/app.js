@@ -74,7 +74,7 @@ const App = {
       const buffer = await res.arrayBuffer();
 
       const features = [];
-      for (const feature of flatgeobuf.deserialize(new Uint8Array(buffer))) {
+      for await (const feature of flatgeobuf.deserialize(new Uint8Array(buffer))) {
         feature.id = feature.properties._fid;
         features.push(feature);
         this.featuresById.set(+feature.properties._fid, feature);
