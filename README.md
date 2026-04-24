@@ -8,16 +8,27 @@ An interactive web map for exploring reef and island features of the **Great Bar
 
 ## Features
 
-### Map interaction
-- Pan, zoom and click any feature to inspect its full attributes in the side panel
+### Map navigation
+- Pan and zoom within the **Australia / GBR region** (minimum zoom and maximum bounds enforced)
+- **Home button** — resets the view to the default GBR centre, zoom, and North-up orientation in one animated move
+- **Custom compass** — circle-and-needle indicator that rotates live with the map; click to reset bearing to North
+- Pitch / tilt is disabled — the map always stays fully horizontal
+
+### Feature interaction
+- Click any feature to inspect its full attributes in the side panel
+- **Hover tooltip** shows the feature name as you move over the map
+- **Feature search** — type a name in the search box at the top of the side panel to get live suggestions; select one to zoom the map to that feature and show its details; ↑↓ Enter Esc keyboard navigation supported
+
+### Visualisation
 - Toggle between **OpenStreetMap** and **ESRI World Imagery** (satellite) basemaps
 - Colour features by **type** (Reef, Island, Rock, Bank, Cay, Terrestrial Reef) or switch to a **single colour**
+- **Labels** toggle shows feature names on the map at zoom ≥ 9
 
 ### Drawing tools
 | Tool | What it does |
 |---|---|
-| **Polygon** | Draw a free polygon on the map; outputs its WKT representation |
-| **BBox** | Two-click rubber-band rectangle; outputs corner coordinates and WKT |
+| **Polygon** | Draw a free polygon on the map |
+| **BBox** | Two-click rubber-band rectangle |
 | **Query features** | Finds all GBR features whose centroid falls inside the drawn shape |
 
 ### Export — single selected feature
@@ -25,9 +36,9 @@ After clicking a feature, three export options are available from the side panel
 
 | Export | Columns | Formats |
 |---|---|---|
-| Name + Type + Centroid | `name`, `type`, `longitude`, `latitude` | CSV, JSON |
-| Name + Type + WKT | `name`, `type`, `wkt` | CSV, JSON |
-| BBox + Buffer | `name`, `type`, `buffer_km`, `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` | CSV, JSON |
+| Name + Type + Centroid | `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` | CSV, JSON |
+| Name + Type + WKT | `name`, `type`, `UNIQUE_ID`, `wkt` | CSV, JSON |
+| BBox + Buffer | `name`, `type`, `UNIQUE_ID`, `buffer_km`, `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` | CSV, JSON |
 
 The **buffer** (0–100 km) is set with a slider before exporting.
 
@@ -87,6 +98,7 @@ The same three export options apply to the entire set of features returned by a 
 |---|---|---|
 | [MapLibre GL JS](https://maplibre.org/) | 3.6.2 | WebGL map rendering |
 | [MapLibre GL Draw](https://github.com/mapbox/mapbox-gl-draw) | 1.4.3 | Polygon and rectangle drawing |
+| [FlatGeobuf](https://flatgeobuf.org/) | 4.4.0 | Streaming binary geospatial format for phase-2 polygon load |
 | [Turf.js](https://turfjs.org/) | 6.5.0 | Centroid, bbox, buffer, point-in-polygon |
 | Vanilla JS / HTML / CSS | — | No build step, no framework |
 
@@ -98,22 +110,33 @@ All libraries are loaded from CDN. The app is a static site that runs entirely i
 
 ```
 GBRfeatures/
-├── index.html              # App shell and layout
+├── index.html              # App shell, layout, help modal
 ├── css/
 │   └── style.css           # Dark-themed responsive UI
 ├── js/
-│   ├── config.js           # Basemap URLs, colour palette
+│   ├── config.js           # Map defaults, bounds, basemap URLs, colour palette
 │   ├── wkt.js              # GeoJSON → WKT converter (Polygon, MultiPolygon)
 │   ├── export.js           # CSV / JSON download logic
 │   ├── panel.js            # Side panel: feature details, query results, export UI
 │   ├── query.js            # Spatial filter (centroid-in-polygon)
 │   ├── draw.js             # Draw tools: polygon (GL Draw) + 2-click bbox
-│   └── app.js              # MapLibre init, layers, events, basemap / colour switching
+│   ├── search.js           # Live feature-name search with suggestion dropdown
+│   └── app.js              # MapLibre init, layers, custom controls, events
 ├── data/
-│   └── features.geojson    # 8.9 MB — simplified polygons, all attributes + _fid
+│   ├── centroids.geojson   # Phase 1: 9,133 centroid points (~4 MB) — loads instantly
+│   └── features.fgb        # Phase 2: full polygon geometry as FlatGeobuf (~5 MB) — streamed in background
 └── scripts/
-    └── prepare_data.py     # One-time GPKG → GeoJSON conversion script
+    └── prepare_data.py     # One-time GPKG → GeoJSON / FlatGeobuf conversion script
 ```
+
+---
+
+## Two-phase loading
+
+To keep the initial load fast the app splits data into two phases:
+
+1. **Phase 1 — centroids** (`data/centroids.geojson`, ~4 MB): point features load on startup and are immediately clickable and searchable. Features are shown as circles that scale with zoom.
+2. **Phase 2 — polygons** (`data/features.fgb`, ~5 MB): the full polygon geometry is streamed in the background using FlatGeobuf. Once ready, circles are swapped for filled polygons and WKT / BBox exports become available.
 
 ---
 
@@ -131,13 +154,13 @@ npx serve .
 
 Then open **http://localhost:8080** in your browser.
 
-> Opening `index.html` directly as a `file://` URL will fail due to browser CORS restrictions when fetching `data/features.geojson`.
+> Opening `index.html` directly as a `file://` URL will fail due to browser CORS restrictions when fetching the data files.
 
 ---
 
-## Regenerating the data file
+## Regenerating the data files
 
-If the source GeoPackage changes, regenerate `data/features.geojson` with:
+If the source GeoPackage changes, regenerate the data files with:
 
 ```bash
 python3 scripts/prepare_data.py
@@ -147,8 +170,8 @@ Requirements: `gdal` (provides `ogr2ogr`), Python 3.
 
 The script:
 1. Runs `ogr2ogr` to convert the GPKG to GeoJSON in WGS84, applying a 0.0005° simplification tolerance
-2. Retains 14 key attribute fields
-3. Adds `_fid` as a feature property and sets the GeoJSON `id` — both used for O(1) feature lookup on click
+2. Retains 14 key attribute fields and adds `_fid` for O(1) feature lookup
+3. Generates `centroids.geojson` (point features) and `features.fgb` (FlatGeobuf polygons)
 
 ---
 
@@ -189,7 +212,7 @@ Using centroids (rather than full polygon intersection) is intentional: it is fa
 
 ## How WKT export works
 
-Geometries in `features.geojson` are simplified GeoJSON. The `js/wkt.js` module converts them to standard WKT strings at 7 decimal-place precision:
+Full polygon geometry is available after phase-2 loading completes. The `js/wkt.js` module converts GeoJSON geometries to standard WKT strings at 7 decimal-place precision:
 
 - `Polygon` → `POLYGON ((lon lat, …))`
 - `MultiPolygon` → `MULTIPOLYGON (((lon lat, …)), ((…)))`
@@ -198,6 +221,8 @@ For buffered bounding boxes, Turf expands the feature's envelope by the requeste
 
 ---
 
-## Acknowledgements
+## Data citation
 
-Data: AIMS NESP Torres Strait Features dataset combined with GBR Features, produced by the Australian Institute of Marine Science (AIMS).
+Lawrey, E. P., Stewart M. (2016) *Complete Great Barrier Reef (GBR) Reef and Island Feature boundaries including Torres Strait (NESP TWQ 3.13, AIMS, TSRA, GBRMPA)* [Dataset]. eAtlas. https://doi.org/10.26274/vhj5-gr60
+
+Metadata record: https://catalogue.eatlas.org.au/geonetwork/srv/eng/catalog.search#/metadata/d2396b2c-68d4-4f4b-aab0-52f7bc4a81f5
