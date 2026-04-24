@@ -1,3 +1,21 @@
+class HomeControl {
+  onAdd(map) {
+    this._map = map;
+    this._container = document.createElement('div');
+    this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+    const btn = document.createElement('button');
+    btn.title = 'Zoom to GBR region';
+    btn.type = 'button';
+    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+    btn.addEventListener('click', () => {
+      map.flyTo({ center: Config.center, zoom: Config.zoom });
+    });
+    this._container.appendChild(btn);
+    return this._container;
+  }
+  onRemove() { this._container.remove(); this._map = null; }
+}
+
 const App = {
   map: null,
   allFeatures: [],          // Point features (phase 1) → Polygon features (phase 2)
@@ -264,9 +282,12 @@ const App = {
         glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf'
       },
       center: Config.center,
-      zoom: Config.zoom
+      zoom: Config.zoom,
+      minZoom: Config.minZoom,
+      maxBounds: Config.maxBounds
     });
     this.map.addControl(new maplibregl.NavigationControl(), 'top-left');
+    this.map.addControl(new HomeControl(), 'top-left');
     this.map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
   },
 

@@ -1,6 +1,9 @@
 const Config = {
   center: [146.5, -18.5],
   zoom: 5,
+  minZoom: 4,
+  // Bounds that encompass Australia + surrounding waters — prevents panning to unrelated regions
+  maxBounds: [[100, -50], [170, 5]],
 
   featureColors: {
     'Reef':             '#2563EB',

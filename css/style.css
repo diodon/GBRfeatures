@@ -455,3 +455,8 @@ button {
 .mapboxgl-ctrl-group { background: rgba(30,41,59,0.95) !important; border-color: #334155 !important; }
 .mapboxgl-ctrl-group button { color: #93c5fd !important; }
 .mapboxgl-ctrl-group button:hover { background: #334155 !important; }
+
+/* ── Home control (matches MapLibre ctrl-group style) ── */
+.maplibregl-ctrl-group { background: rgba(30,41,59,0.95) !important; border-color: #334155 !important; }
+.maplibregl-ctrl-group button { color: #93c5fd !important; display: flex; align-items: center; justify-content: center; }
+.maplibregl-ctrl-group button:hover { background: #334155 !important; }
