@@ -23,6 +23,57 @@
     <button class="btn-tool" id="color-single">Single</button>
     <span style="font-size:11px;color:#64748b;margin-left:8px;margin-right:4px">Labels:</span>
     <button class="btn-tool" id="toggle-labels">Off</button>
+    <button class="btn-help" id="btn-help" title="Help &amp; Credits">?</button>
+  </div>
+</div>
+
+<!-- Help modal -->
+<div id="help-overlay" class="hidden">
+  <div id="help-modal">
+    <button id="help-close" title="Close">&times;</button>
+    <h2>GBR Feature Explorer — Help</h2>
+
+    <h3>How to use</h3>
+    <ul>
+      <li><strong>Click</strong> any reef, island, rock, bank, cay or similar feature to see its attributes and export options in the side panel.</li>
+      <li><strong>Draw &rsaquo; Polygon</strong> or <strong>BBox</strong> to select and export multiple features by area.</li>
+      <li><strong>Labels</strong> toggle shows feature names at zoom&nbsp;&ge;&nbsp;9.</li>
+      <li><strong>Colour</strong> switches between feature-type colours and a single neutral colour.</li>
+      <li>Polygon geometry loads in the background after the initial centroid view — export buttons that require full geometry are enabled automatically once it is ready.</li>
+    </ul>
+
+    <h3>Export formats</h3>
+    <ul>
+      <li><strong>Centroid</strong> — name, type, UNIQUE_ID, lon/lat (always available).</li>
+      <li><strong>WKT</strong> — name, type, UNIQUE_ID, full polygon geometry as Well-Known Text.</li>
+      <li><strong>BBox + Buffer</strong> — name, type, UNIQUE_ID, bounding box with optional buffer in km.</li>
+    </ul>
+
+    <h3>Credits</h3>
+    <p>
+      Developed by <strong>AIMS — Australian Institute of Marine Science</strong>.<br>
+      Feature data derived from the Great Barrier Reef and Torres Strait spatial dataset.<br>
+      Built with <a href="https://maplibre.org" target="_blank" rel="noopener">MapLibre GL JS</a>,
+      <a href="https://flatgeobuf.org" target="_blank" rel="noopener">FlatGeobuf</a>,
+      and <a href="https://turfjs.org" target="_blank" rel="noopener">Turf.js</a>.
+    </p>
+
+    <h3>License</h3>
+    <p>
+      Data and application are released under the
+      <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">
+        Creative Commons Attribution 4.0 International (CC&nbsp;BY&nbsp;4.0)
+      </a> licence.
+      You are free to share and adapt this material for any purpose, provided appropriate credit is given.
+    </p>
+
+    <h3>Feedback &amp; Issues</h3>
+    <p>
+      Found a bug or have a feature request?
+      <a href="https://github.com/diodon/GBRfeatures/issues/new/choose" target="_blank" rel="noopener">
+        Open an issue on GitHub
+      </a>.
+    </p>
   </div>
 </div>
 
@@ -89,6 +140,16 @@
 <script src="js/panel.js"></script>
 <script src="js/draw.js"></script>
 <script src="js/app.js"></script>
+
+<script>
+  (function () {
+    const overlay = document.getElementById('help-overlay');
+    document.getElementById('btn-help').addEventListener('click', () => overlay.classList.remove('hidden'));
+    document.getElementById('help-close').addEventListener('click', () => overlay.classList.add('hidden'));
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.add('hidden'); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') overlay.classList.add('hidden'); });
+  })();
+</script>
 
 </body>
 </html>

@@ -359,6 +359,98 @@ button {
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
+/* ── Help button ── */
+.btn-help {
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #334155;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid #475569;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.btn-help:hover { background: #475569; color: #e2e8f0; }
+
+/* ── Help modal ── */
+#help-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+#help-overlay.hidden { display: none; }
+
+#help-modal {
+  position: relative;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 28px 32px;
+  max-width: 560px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+#help-modal h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 20px;
+}
+
+#help-modal h3 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #0891b2;
+  margin: 18px 0 8px;
+}
+
+#help-modal p, #help-modal li {
+  font-size: 13px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+#help-modal ul {
+  padding-left: 18px;
+}
+
+#help-modal li { margin-bottom: 5px; }
+
+#help-modal a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+#help-modal a:hover { text-decoration: underline; }
+
+#help-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+#help-close:hover { background: #334155; color: #e2e8f0; }
+
 /* ── MapLibre draw overrides ── */
 .mapboxgl-ctrl-group { background: rgba(30,41,59,0.95) !important; border-color: #334155 !important; }
 .mapboxgl-ctrl-group button { color: #93c5fd !important; }
