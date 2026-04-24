@@ -64,30 +64,33 @@ const App = {
       }
     });
 
-    this._addLabelLayer();
     this._bindClickEvents('gbr-circles', 'gbr-circle-highlight');
+    this._addLabelLayer();
   },
 
   _addLabelLayer() {
-    this.map.addLayer({
-      id: 'gbr-labels',
-      type: 'symbol',
-      source: 'gbr',
-      minzoom: 9,
-      layout: {
-        'text-field': ['coalesce', ['get', 'GBR_NAME'], ['get', 'LOC_NAME_S'], ''],
-        'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 14, 14],
-        'text-anchor': 'center',
-        'text-max-width': 8,
-        'text-allow-overlap': false,
-        'visibility': 'none'
-      },
-      paint: {
-        'text-color': '#f1f5f9',
-        'text-halo-color': '#0f172a',
-        'text-halo-width': 1.5
-      }
-    });
+    try {
+      this.map.addLayer({
+        id: 'gbr-labels',
+        type: 'symbol',
+        source: 'gbr',
+        minzoom: 9,
+        layout: {
+          'text-field': ['coalesce', ['get', 'GBR_NAME'], ['get', 'LOC_NAME_S']],
+          'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 14, 14],
+          'text-anchor': 'center',
+          'text-max-width': 8,
+          'visibility': 'none'
+        },
+        paint: {
+          'text-color': '#f1f5f9',
+          'text-halo-color': '#0f172a',
+          'text-halo-width': 1.5
+        }
+      });
+    } catch (err) {
+      console.error('Label layer failed to add:', err);
+    }
   },
 
   // ── Phase 2: full polygons (background) ──────────────────────────────────
