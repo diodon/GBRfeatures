@@ -70,6 +70,12 @@ const App = {
 
   _addLabelLayer() {
     try {
+      // MapLibre validates text-field against style.stylesheet.glyphs at addLayer time.
+      // The inline style object doesn't always propagate there, so patch it directly.
+      const glyphsUrl = 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf';
+      if (this.map.style?.stylesheet && !this.map.style.stylesheet.glyphs) {
+        this.map.style.stylesheet.glyphs = glyphsUrl;
+      }
       this.map.addLayer({
         id: 'gbr-labels',
         type: 'symbol',
