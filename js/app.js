@@ -10,10 +10,10 @@ class CompassControl {
     this._btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
       <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
       <g class="compass-needle">
-        <path d="M12,3 L15,13 L12,11 L9,13 Z" fill="#93c5fd"/>
-        <path d="M12,21 L9,11 L12,13 L15,11 Z" fill="#475569"/>
+        <path class="compass-n" d="M12,3 L15,13 L12,11 L9,13 Z"/>
+        <path class="compass-s" d="M12,21 L9,11 L12,13 L15,11 Z"/>
       </g>
-      <circle cx="12" cy="12" r="1.5" fill="#e2e8f0"/>
+      <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
     </svg>`;
 
     this._needle = this._btn.querySelector('.compass-needle');
@@ -66,6 +66,7 @@ const App = {
   async init() {
     this._initMap();
     this._initControls();
+    Theme.init();
     Search.init();
 
     this.map.on('load', async () => {

@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
   <link rel="stylesheet" href="https://unpkg.com/@mapbox/mapbox-gl-draw@1.4.3/dist/mapbox-gl-draw.css">
   <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Apply saved theme before first paint to avoid flash
+    if (localStorage.getItem('gbr-theme') === 'light')
+      document.documentElement.setAttribute('data-theme', 'light');
+  </script>
 </head>
 <body>
 
@@ -23,6 +28,7 @@
     <button class="btn-tool" id="color-single">Single</button>
     <span style="font-size:11px;color:#64748b;margin-left:8px;margin-right:4px">Labels:</span>
     <button class="btn-tool" id="toggle-labels">Off</button>
+    <button class="btn-help" id="btn-theme" title="Switch to light theme"></button>
     <button class="btn-help" id="btn-help" title="Help &amp; Credits">?</button>
   </div>
 </div>
@@ -164,6 +170,7 @@
 <script src="js/query.js"></script>
 <script src="js/panel.js"></script>
 <script src="js/draw.js"></script>
+<script src="js/theme.js"></script>
 <script src="js/search.js"></script>
 <script src="js/app.js"></script>
 
