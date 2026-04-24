@@ -60,6 +60,7 @@ const App = {
   colorMode: 'type',
   currentBasemap: 'osm',
   _selectedId: null,
+  _multiSelection: new Map(),  // fid → feature (shift-click selection)
   _phase2Ready: false,
   _labelsVisible: false,
 
@@ -178,8 +179,11 @@ const App = {
       this._replaceCirclesWithPolygons();
       this._clearStatus();
 
-      // If a feature was already selected, re-show it with geometry exports enabled
-      if (this._selectedId) {
+      // Restore selection state after layer swap
+      if (this._multiSelection.size > 0) {
+        this._updateMultiHighlight();
+        Panel.showMultiSelection([...this._multiSelection.values()]);
+      } else if (this._selectedId) {
         const f = this.featuresById.get(this._selectedId);
         if (f) Panel.showFeature(f, true);
       }
@@ -227,7 +231,23 @@ const App = {
     this.map.on('click', fillLayer, e => {
       const fid = +e.features[0].properties._fid;
       const feature = this.featuresById.get(fid);
-      if (feature) {
+      if (!feature) return;
+
+      if (e.originalEvent.shiftKey) {
+        this._selectedId = null;
+        if (this._multiSelection.has(fid)) {
+          this._multiSelection.delete(fid);
+        } else {
+          this._multiSelection.set(fid, feature);
+        }
+        this._updateMultiHighlight();
+        if (this._multiSelection.size === 0) {
+          Panel.showPlaceholder();
+        } else {
+          Panel.showMultiSelection([...this._multiSelection.values()]);
+        }
+      } else {
+        this._multiSelection.clear();
         this._selectedId = fid;
         this._setHighlight(highlightLayer, fid);
         Panel.showFeature(feature, this._phase2Ready);
@@ -257,6 +277,16 @@ const App = {
     if (this.map.getLayer(layerId)) {
       this.map.setFilter(layerId, ['==', ['get', '_fid'], fid]);
     }
+  },
+
+  _updateMultiHighlight() {
+    const fids = [...this._multiSelection.keys()];
+    const filter = fids.length
+      ? ['in', ['get', '_fid'], ['literal', fids]]
+      : ['==', ['get', '_fid'], -1];
+    ['gbr-highlight', 'gbr-circle-highlight'].forEach(id => {
+      if (this.map.getLayer(id)) this.map.setFilter(id, filter);
+    });
   },
 
   _colorExpression() {
@@ -290,11 +320,23 @@ const App = {
 
   clearHighlight() {
     this._selectedId = null;
+    this._multiSelection.clear();
     if (this.map.getLayer('gbr-highlight'))        this.map.setFilter('gbr-highlight', ['==', ['get', '_fid'], -1]);
     if (this.map.getLayer('gbr-circle-highlight')) this.map.setFilter('gbr-circle-highlight', ['==', ['get', '_fid'], -1]);
   },
 
+  removeFromMultiSelection(fid) {
+    this._multiSelection.delete(fid);
+    this._updateMultiHighlight();
+    if (this._multiSelection.size === 0) {
+      Panel.showPlaceholder();
+    } else {
+      Panel.showMultiSelection([...this._multiSelection.values()]);
+    }
+  },
+
   zoomToFeature(feature) {
+    this._multiSelection.clear();
     // Phase 1: use centroid point; Phase 2: use polygon bbox
     if (feature.geometry.type === 'Point') {
       const [lon, lat] = feature.geometry.coordinates;

@@ -47,6 +47,63 @@ const Panel = {
     this._bindExportButtons();
   },
 
+  showMultiSelection(features) {
+    this._currentFeatures = features;
+    this._geometryReady = App._phase2Ready;
+    const count = features.length;
+
+    const rows = features.map(f => {
+      const p = f.properties;
+      const name = p.GBR_NAME || p.LOC_NAME_S || '(unnamed)';
+      return `<tr class="result-row" data-fid="${p._fid}">
+        <td>${this._escape(name)}</td>
+        <td><span class="type-badge small" style="background:${this._typeColor(p.FEAT_NAME)}">${p.FEAT_NAME || '—'}</span></td>
+        <td class="remove-cell">
+          <button class="remove-item" data-fid="${p._fid}" title="Remove from selection">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('panel-content').innerHTML = `
+      <div class="query-header">
+        <h3>${count} feature${count !== 1 ? 's' : ''} selected</h3>
+        <p class="hint">Shift-click features to add/remove. Click a row to zoom.</p>
+      </div>
+
+      ${this._exportBlock()}
+
+      <table class="result-table">
+        <thead><tr><th>Name</th><th>Type</th><th></th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+    this._bindExportButtons();
+
+    document.querySelectorAll('.result-row').forEach(row => {
+      row.addEventListener('click', e => {
+        if (e.target.closest('.remove-item')) return;
+        const fid = +row.dataset.fid;
+        const f = App.featuresById.get(fid);
+        if (!f) return;
+        if (f.geometry.type === 'Point') {
+          App.map.flyTo({ center: f.geometry.coordinates, zoom: 11 });
+        } else {
+          const bbox = turf.bbox(f);
+          App.map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { padding: 80, maxZoom: 14 });
+        }
+      });
+    });
+
+    document.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        App.removeFromMultiSelection(+btn.dataset.fid);
+      });
+    });
+  },
+
   showQueryResults(features) {
     this._currentFeatures = features;
     this._geometryReady = App._phase2Ready;
