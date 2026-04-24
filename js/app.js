@@ -1,3 +1,40 @@
+class CompassControl {
+  onAdd(map) {
+    this._map = map;
+    this._container = document.createElement('div');
+    this._container.className = 'maplibregl-ctrl maplibregl-ctrl-group';
+
+    this._btn = document.createElement('button');
+    this._btn.title = 'Reset bearing to north';
+    this._btn.type = 'button';
+    this._btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <g class="compass-needle">
+        <path d="M12,3 L15,13 L12,11 L9,13 Z" fill="#93c5fd"/>
+        <path d="M12,21 L9,11 L12,13 L15,11 Z" fill="#475569"/>
+      </g>
+      <circle cx="12" cy="12" r="1.5" fill="#e2e8f0"/>
+    </svg>`;
+
+    this._needle = this._btn.querySelector('.compass-needle');
+    this._btn.addEventListener('click', () => map.resetNorth());
+    this._container.appendChild(this._btn);
+
+    this._onRotate = () => {
+      this._needle.setAttribute('transform', `rotate(${-map.getBearing()}, 12, 12)`);
+    };
+    map.on('rotate', this._onRotate);
+    this._onRotate();
+
+    return this._container;
+  }
+  onRemove() {
+    this._map.off('rotate', this._onRotate);
+    this._container.remove();
+    this._map = null;
+  }
+}
+
 class HomeControl {
   onAdd(map) {
     this._map = map;
@@ -286,8 +323,9 @@ const App = {
       minZoom: Config.minZoom,
       maxBounds: Config.maxBounds
     });
-    this.map.addControl(new maplibregl.NavigationControl(), 'top-left');
+    this.map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
     this.map.addControl(new HomeControl(), 'top-left');
+    this.map.addControl(new CompassControl(), 'top-left');
     this.map.addControl(new maplibregl.ScaleControl({ unit: 'metric' }), 'bottom-left');
   },
 
