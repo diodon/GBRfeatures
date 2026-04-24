@@ -77,6 +77,7 @@ const App = {
         minzoom: 9,
         layout: {
           'text-field': ['coalesce', ['get', 'GBR_NAME'], ['get', 'LOC_NAME_S']],
+          'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
           'text-size': ['interpolate', ['linear'], ['zoom'], 9, 10, 14, 14],
           'text-anchor': 'center',
           'text-max-width': 8,
@@ -250,7 +251,12 @@ const App = {
   _initMap() {
     this.map = new maplibregl.Map({
       container: 'map',
-      style: { version: 8, sources: {}, layers: [] },
+      style: {
+        version: 8,
+        sources: {},
+        layers: [],
+        glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf'
+      },
       center: Config.center,
       zoom: Config.zoom
     });
