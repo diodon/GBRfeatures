@@ -143,6 +143,23 @@ body {
 #panel-content::-webkit-scrollbar-track { background: transparent; }
 #panel-content::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
 
+#panel-footer {
+  flex-shrink: 0;
+  border-top: 1px solid #334155;
+  padding: 8px 14px;
+  text-align: center;
+}
+
+#panel-footer a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #475569;
+  text-decoration: none;
+}
+#panel-footer a:hover { color: #93c5fd; }
+
 /* ── Feature detail ── */
 .feature-header {
   display: flex;
