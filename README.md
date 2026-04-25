@@ -35,18 +35,24 @@ An interactive web map for exploring reef and island features of the **Great Bar
 | **Query features** | Finds all GBR features whose centroid falls inside the drawn shape |
 
 ### Export — single selected feature
-After clicking a feature, three export options are available from the side panel:
+After clicking a feature, three export options are available from the side panel. Each row has a **CSV / JSON** format toggle and two action buttons — **Copy** (copies to clipboard) and **Download** (saves as a file):
 
-| Export | Columns | Formats |
-|---|---|---|
-| Name + Type + Centroid | `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` | CSV, JSON |
-| Name + Type + WKT | `name`, `type`, `UNIQUE_ID`, `wkt` | CSV, JSON |
-| BBox + Buffer | `name`, `type`, `UNIQUE_ID`, `buffer_km`, `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` | CSV, JSON |
+| Export | Columns |
+|---|---|
+| Name + Type + Centroid | `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` |
+| Name + Type + WKT | `name`, `type`, `UNIQUE_ID`, `wkt` |
+| BBox + Buffer | `name`, `type`, `UNIQUE_ID`, `buffer_km`, `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` |
 
 The **buffer** (0–100 km) is set with a slider before exporting.
 
 ### Export — query results
-The same three export options apply to the entire set of features returned by a spatial query, enabling bulk download.
+The same three export options (with the same Copy / Download buttons) apply to the entire set of features returned by a spatial query or shift-click multi-selection, enabling bulk download.
+
+### Draw result panel
+After drawing a polygon or bounding box, a panel in the lower-left of the map shows:
+- The **WKT** of the shape (in a scrollable text area)
+- The **bounding box** coordinates (`minX, minY, maxX, maxY`)
+- **Copy WKT** and **Copy BBox** buttons to copy either value to the clipboard
 
 ---
 

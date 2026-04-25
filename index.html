@@ -45,7 +45,7 @@
       <li><strong>Shift-click</strong> features to build a multi-feature selection — each feature is added to the list in the side panel. Shift-click again to remove it. Click the &times; next to any row to remove that item. A regular click clears the multi-selection and returns to single-feature mode.</li>
       <li><strong>Hover</strong> over a feature to see its local name and reef ID in a tooltip.</li>
       <li><strong>Search</strong> by typing a name in the box at the top of the side panel — suggestions appear as you type; use ↑↓ Enter to navigate, Esc to dismiss.</li>
-      <li><strong>Draw &rsaquo; Polygon</strong> or <strong>BBox</strong> to select and export multiple features by area.</li>
+      <li><strong>Draw &rsaquo; Polygon</strong> or <strong>BBox</strong> to select and export multiple features by area. After drawing, a panel in the lower-left shows the WKT and bounding box coordinates with <strong>Copy WKT</strong> and <strong>Copy BBox</strong> buttons.</li>
       <li><strong>Clear</strong> resets the drawing, the selection, and the search box.</li>
       <li><strong>Labels</strong> toggle shows feature names at zoom&nbsp;&ge;&nbsp;9.</li>
       <li><strong>Colour</strong> switches between feature-type colours and a single neutral colour; the legend is shown or hidden automatically.</li>
@@ -54,6 +54,12 @@
     </ul>
 
     <h3>Export formats</h3>
+    <p>Each export row has a <strong>CSV / JSON</strong> format toggle, then two action buttons:</p>
+    <ul>
+      <li><strong>Copy</strong> — copies the data in the selected format to the clipboard.</li>
+      <li><strong>Download</strong> — saves the data as a file.</li>
+    </ul>
+    <p>Three export types are available:</p>
     <ul>
       <li><strong>Centroid</strong> — name, type, UNIQUE_ID, lon/lat (always available).</li>
       <li><strong>WKT</strong> — name, type, UNIQUE_ID, full polygon geometry as Well-Known Text.</li>
