@@ -1,6 +1,9 @@
 const Panel = {
   _currentFeatures: [],
   _bufferKm: 5,
+  _exportWKT: false,
+  _exportBBox: false,
+  _exportBuffer: false,
 
   init() {},
 
@@ -142,74 +145,41 @@ const Panel = {
 
   _exportBlock() {
     const geoReady = this._geometryReady;
-    const geoTitle = geoReady ? '' : ' title="Available once full geometry loads"';
     const geoDis   = geoReady ? '' : ' disabled';
+    const geoTitle = geoReady ? '' : ' title="Available once full geometry loads"';
 
-    const actionRow = (action, label, dis = '', title = '') => `
-      <div class="export-row" data-action="${action}" data-fmt="csv">
-        <div class="export-row-top">
-          <span class="export-label">${label}</span>
-          <div class="export-fmt-group">
-            <button class="btn-fmt active" data-fmt="csv"${dis}${title}>CSV</button>
-            <button class="btn-fmt" data-fmt="json"${dis}${title}>JSON</button>
-          </div>
-        </div>
-        <div class="export-act-group">
-          <button class="btn-act-copy" data-role="copy"${dis}${title}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Copy
-          </button>
-          <button class="btn-act-dl" data-role="download"${dis}${title}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download
-          </button>
-        </div>
-      </div>`;
+    const optBtn = (id, label, active) =>
+      `<button class="btn-opt${active ? ' active' : ''}" data-opt="${id}"${geoDis}${geoTitle}>${label}</button>`;
 
     return `
       <div class="export-section">
         <h4>Export</h4>
+        <p class="export-always">Always: Name · Type · UNIQUE_ID · Centroid</p>
 
-        ${actionRow('centroid', 'Name + Type + Centroid')}
-
-        <div class="export-row" data-action="wkt" data-fmt="csv">
-          <div class="export-row-top">
-            <span class="export-label">Name + Type + WKT ${geoReady ? '' : '<span class="geo-pending">⏳ loading…</span>'}</span>
-            <div class="export-fmt-group">
-              <button class="btn-fmt active" data-fmt="csv"${geoDis}${geoTitle}>CSV</button>
-              <button class="btn-fmt" data-fmt="json"${geoDis}${geoTitle}>JSON</button>
-            </div>
-          </div>
-          <div class="export-act-group">
-            <button class="btn-act-copy" data-role="copy"${geoDis}${geoTitle}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy
-            </button>
-            <button class="btn-act-dl" data-role="download"${geoDis}${geoTitle}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download
-            </button>
-          </div>
+        <div class="export-opts-row">
+          ${optBtn('wkt',    'WKT',    this._exportWKT)}
+          ${optBtn('bbox',   'BBox',   this._exportBBox)}
+          ${optBtn('buffer', 'Buffer', this._exportBuffer)}
         </div>
 
-        <div class="export-row" data-action="bbox" data-fmt="csv">
-          <div class="export-row-top">
-            <span class="export-label">BBox + Buffer ${geoReady ? '' : '<span class="geo-pending">⏳ loading…</span>'}</span>
-            <div class="export-fmt-group">
-              <button class="btn-fmt active" data-fmt="csv"${geoDis}${geoTitle}>CSV</button>
-              <button class="btn-fmt" data-fmt="json"${geoDis}${geoTitle}>JSON</button>
-            </div>
-          </div>
-          <div class="buffer-control">
-            <input type="range" id="buffer-slider" min="0" max="100" step="0.5" value="${this._bufferKm}">
-            <span id="buffer-value">${this._bufferKm} km</span>
+        ${!geoReady ? '<p class="geo-pending">⏳ WKT · BBox · Buffer available once geometry loads</p>' : ''}
+
+        <div class="buffer-control" id="buffer-control"${this._exportBuffer ? '' : ' style="display:none"'}>
+          <input type="range" id="buffer-slider" min="0" max="100" step="0.5" value="${this._bufferKm}">
+          <span id="buffer-value">${this._bufferKm} km</span>
+        </div>
+
+        <div class="export-bottom" data-fmt="csv">
+          <div class="export-fmt-group">
+            <button class="btn-fmt active" data-fmt="csv">CSV</button>
+            <button class="btn-fmt" data-fmt="json">JSON</button>
           </div>
           <div class="export-act-group">
-            <button class="btn-act-copy" data-role="copy"${geoDis}${geoTitle}>
+            <button class="btn-act-copy" data-role="copy">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               Copy
             </button>
-            <button class="btn-act-dl" data-role="download"${geoDis}${geoTitle}>
+            <button class="btn-act-dl" data-role="download">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Download
             </button>
@@ -219,52 +189,70 @@ const Panel = {
   },
 
   _bindExportButtons() {
-    // Format toggle: clicking CSV/JSON updates the row's data-fmt and toggles active class
-    document.querySelectorAll('.export-row').forEach(row => {
-      row.querySelectorAll('.btn-fmt').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (btn.disabled) return;
-          row.querySelectorAll('.btn-fmt').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          row.dataset.fmt = btn.dataset.fmt;
-        });
-      });
-
-      row.querySelectorAll('.btn-act-copy, .btn-act-dl').forEach(btn => {
-        btn.addEventListener('click', () => {
-          if (btn.disabled) return;
-          const action = row.dataset.action;
-          const fmt = row.dataset.fmt;
-          const features = this._currentFeatures;
-          if (!features.length) return;
-
-          const result = Export.generate(action, features, fmt, this._bufferKm);
-          if (!result) return;
-
-          if (btn.dataset.role === 'download') {
-            Export.downloadResult(result);
-          } else {
-            navigator.clipboard.writeText(result.content).then(() => {
-              const orig = btn.innerHTML;
-              btn.textContent = 'Copied!';
-              setTimeout(() => { btn.innerHTML = orig; }, 1500);
-            }).catch(() => {
-              const orig = btn.innerHTML;
-              btn.textContent = 'Failed';
-              setTimeout(() => { btn.innerHTML = orig; }, 1500);
-            });
-          }
-        });
+    // Option toggles (WKT / BBox / Buffer)
+    document.querySelectorAll('.btn-opt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.disabled) return;
+        const opt = btn.dataset.opt;
+        const nowActive = !btn.classList.contains('active');
+        btn.classList.toggle('active', nowActive);
+        if (opt === 'wkt')    this._exportWKT    = nowActive;
+        if (opt === 'bbox')   this._exportBBox   = nowActive;
+        if (opt === 'buffer') {
+          this._exportBuffer = nowActive;
+          document.getElementById('buffer-control').style.display = nowActive ? '' : 'none';
+        }
       });
     });
 
-    const slider = document.getElementById('buffer-slider');
-    if (slider) {
-      slider.addEventListener('input', e => {
-        this._bufferKm = +e.target.value;
-        document.getElementById('buffer-value').textContent = `${this._bufferKm} km`;
+    // Buffer slider
+    document.getElementById('buffer-slider')?.addEventListener('input', e => {
+      this._bufferKm = +e.target.value;
+      document.getElementById('buffer-value').textContent = `${this._bufferKm} km`;
+    });
+
+    // Format toggle
+    const bottom = document.querySelector('.export-bottom');
+    if (!bottom) return;
+
+    bottom.querySelectorAll('.btn-fmt').forEach(btn => {
+      btn.addEventListener('click', () => {
+        bottom.querySelectorAll('.btn-fmt').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        bottom.dataset.fmt = btn.dataset.fmt;
       });
-    }
+    });
+
+    // Copy / Download
+    bottom.querySelectorAll('.btn-act-copy, .btn-act-dl').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const features = this._currentFeatures;
+        if (!features.length) return;
+
+        const opts = {
+          wkt:      this._exportWKT,
+          bbox:     this._exportBBox,
+          buffer:   this._exportBuffer,
+          bufferKm: this._bufferKm
+        };
+        const result = Export.generate(features, opts, bottom.dataset.fmt);
+        if (!result) return;
+
+        if (btn.dataset.role === 'download') {
+          Export.download(result);
+        } else {
+          navigator.clipboard.writeText(result.content).then(() => {
+            const orig = btn.innerHTML;
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.innerHTML = orig; }, 1500);
+          }).catch(() => {
+            const orig = btn.innerHTML;
+            btn.textContent = 'Failed';
+            setTimeout(() => { btn.innerHTML = orig; }, 1500);
+          });
+        }
+      });
+    });
   },
 
   _row(label, value) {
