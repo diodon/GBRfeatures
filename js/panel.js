@@ -31,7 +31,7 @@ const Panel = {
         ${this._row('Level 3', p.LEVEL_3)}
         ${this._row('Dataset', p.DATASET)}
         ${this._row('Country', p.Country)}
-        ${this._row('Area (deg²)', p.SHAPE_AREA != null ? p.SHAPE_AREA.toFixed(4) : null)}
+        ${this._row('Area (km²)', p.SHAPE_AREA != null ? p.SHAPE_AREA.toFixed(4) : null)}
         ${this._row('Code', p.CODE)}
         ${this._row('Region ID', p.RegionID)}
         ${this._row('Unique ID', p.UNIQUE_ID)}

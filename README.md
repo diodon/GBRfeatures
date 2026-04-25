@@ -94,7 +94,7 @@ After drawing a polygon or bounding box, a panel in the lower-left of the map sh
 | `LEVEL_1/2/3` | Classification hierarchy |
 | `DATASET` | Source dataset (GBR Features / TS Features) |
 | `Country` | Australia or Papua-New Guinea |
-| `SHAPE_AREA` | Area in decimal-degree² |
+| `SHAPE_AREA` | Area in km² |
 | `CODE` | Feature code |
 | `RegionID` | Region identifier |
 | `UNIQUE_ID` | Dataset-internal unique identifier |
