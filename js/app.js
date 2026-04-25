@@ -57,7 +57,7 @@ const App = {
   map: null,
   allFeatures: [],          // Point features (phase 1) → Polygon features (phase 2)
   featuresById: new Map(),  // _fid → feature
-  colorMode: 'type',
+  colorMode: 'single',
   currentBasemap: 'osm',
   _selectedId: null,
   _multiSelection: new Map(),  // fid → feature (shift-click selection)
@@ -72,6 +72,7 @@ const App = {
 
     this.map.on('load', async () => {
       this._addBasemap('osm');
+      document.getElementById('legend').style.display = 'none';
       Draw.init(this.map);
       Panel.showPlaceholder();
       await this._loadPhase1();
