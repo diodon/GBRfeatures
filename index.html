@@ -53,18 +53,22 @@
       <li>Polygon geometry loads in the background after the initial centroid view — export buttons that require full geometry are enabled automatically once it is ready.</li>
     </ul>
 
-    <h3>Export formats</h3>
-    <p>Each export row has a <strong>CSV / JSON</strong> format toggle, then two action buttons:</p>
+    <h3>Export</h3>
+    <p>
+      The export panel always includes <strong>Name, Type, UNIQUE_ID</strong> and <strong>Centroid</strong> (lon/lat in WGS84).
+      Toggle any combination of optional fields before exporting:
+    </p>
     <ul>
-      <li><strong>Copy</strong> — copies the data in the selected format to the clipboard.</li>
-      <li><strong>Download</strong> — saves the data as a file.</li>
+      <li><strong>WKT</strong> — full polygon geometry as Well-Known Text.</li>
+      <li><strong>BBox</strong> — bounding box (<code>minX, minY, maxX, maxY</code>) plus a WKT representation.</li>
+      <li><strong>Buffer</strong> — applies a buffer (0–100 km, set with the slider) to the polygon before computing WKT and/or BBox; adds a <code>buffer_km</code> column.</li>
     </ul>
-    <p>Three export types are available:</p>
-    <ul>
-      <li><strong>Centroid</strong> — name, type, UNIQUE_ID, lon/lat (always available).</li>
-      <li><strong>WKT</strong> — name, type, UNIQUE_ID, full polygon geometry as Well-Known Text.</li>
-      <li><strong>BBox + Buffer</strong> — name, type, UNIQUE_ID, bounding box with optional buffer in km.</li>
-    </ul>
+    <p>WKT, BBox and Buffer are enabled automatically once full polygon geometry has loaded in the background.</p>
+    <p>
+      Choose <strong>CSV</strong> or <strong>JSON</strong> format, then use <strong>Copy</strong> to send the data to the clipboard
+      or <strong>Download</strong> to save it as a file.
+      All coordinates are in <strong>WGS84 (EPSG:4326)</strong>.
+    </p>
 
     <h3>Credits</h3>
     <p>

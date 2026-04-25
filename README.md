@@ -34,19 +34,22 @@ An interactive web map for exploring reef and island features of the **Great Bar
 | **BBox** | Two-click rubber-band rectangle |
 | **Query features** | Finds all GBR features whose centroid falls inside the drawn shape |
 
-### Export — single selected feature
-After clicking a feature, three export options are available from the side panel. Each row has a **CSV / JSON** format toggle and two action buttons — **Copy** (copies to clipboard) and **Download** (saves as a file):
+### Export
+The export panel is available after selecting a single feature, building a shift-click multi-selection, or running a spatial query.
 
-| Export | Columns |
+**Always included:** `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` (centroid, WGS84 EPSG:4326)
+
+**Optional toggles** — click to activate any combination:
+
+| Toggle | Extra columns added |
 |---|---|
-| Name + Type + Centroid | `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` |
-| Name + Type + WKT | `name`, `type`, `UNIQUE_ID`, `wkt` |
-| BBox + Buffer | `name`, `type`, `UNIQUE_ID`, `buffer_km`, `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` |
+| **WKT** | `wkt` — full polygon geometry as Well-Known Text |
+| **BBox** | `minX`, `minY`, `maxX`, `maxY`, `bbox_wkt` |
+| **Buffer** | `buffer_km` — applies a buffer (0–100 km) to the polygon before computing WKT and/or BBox |
 
-The **buffer** (0–100 km) is set with a slider before exporting.
+WKT, BBox and Buffer are disabled until full polygon geometry has loaded in the background.
 
-### Export — query results
-The same three export options (with the same Copy / Download buttons) apply to the entire set of features returned by a spatial query or shift-click multi-selection, enabling bulk download.
+Choose **CSV** or **JSON**, then **Copy** to clipboard or **Download** as a file.
 
 ### Draw result panel
 After drawing a polygon or bounding box, a panel in the lower-left of the map shows:
