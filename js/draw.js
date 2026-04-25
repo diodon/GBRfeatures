@@ -96,26 +96,36 @@ const Draw = {
     const wkt = WKT.fromGeoJSON(poly.geometry);
     const [minX, minY, maxX, maxY] = turf.bbox(poly);
 
+    const bboxStr = `${minX.toFixed(5)}, ${minY.toFixed(5)}, ${maxX.toFixed(5)}, ${maxY.toFixed(5)}`;
     this._setResultBox(`
       <div class="result-label">Polygon WKT</div>
       <textarea class="result-text" readonly rows="3">${wkt}</textarea>
-      <div class="result-label" style="margin-top:6px">BBox: ${minX.toFixed(5)}, ${minY.toFixed(5)}, ${maxX.toFixed(5)}, ${maxY.toFixed(5)}</div>
-      <button class="copy-btn" id="copy-poly-wkt">Copy WKT</button>`);
+      <div class="result-label" style="margin-top:6px">BBox: ${bboxStr}</div>
+      <div class="copy-btn-row">
+        <button class="copy-btn" id="copy-poly-wkt">Copy WKT</button>
+        <button class="copy-btn" id="copy-poly-bbox">Copy BBox</button>
+      </div>`);
 
     document.getElementById('copy-poly-wkt')?.addEventListener('click', () => navigator.clipboard.writeText(wkt));
+    document.getElementById('copy-poly-bbox')?.addEventListener('click', () => navigator.clipboard.writeText(bboxStr));
     this._setQueryVisible(true);
   },
 
   _showBBoxResult(minX, minY, maxX, maxY) {
     const wkt = WKT.bboxToWKT(minX, minY, maxX, maxY);
+    const bboxStr = `${minX.toFixed(5)}, ${minY.toFixed(5)}, ${maxX.toFixed(5)}, ${maxY.toFixed(5)}`;
     this._setResultBox(`
       <div class="result-label">BBox</div>
-      <code class="result-bbox">${minX.toFixed(5)}, ${minY.toFixed(5)}, ${maxX.toFixed(5)}, ${maxY.toFixed(5)}</code>
+      <code class="result-bbox">${bboxStr}</code>
       <div class="result-label" style="margin-top:6px">WKT</div>
       <textarea class="result-text" readonly rows="2">${wkt}</textarea>
-      <button class="copy-btn" id="copy-bbox-wkt">Copy WKT</button>`);
+      <div class="copy-btn-row">
+        <button class="copy-btn" id="copy-bbox-wkt">Copy WKT</button>
+        <button class="copy-btn" id="copy-bbox-coords">Copy BBox</button>
+      </div>`);
 
     document.getElementById('copy-bbox-wkt')?.addEventListener('click', () => navigator.clipboard.writeText(wkt));
+    document.getElementById('copy-bbox-coords')?.addEventListener('click', () => navigator.clipboard.writeText(bboxStr));
   },
 
   _drawBBoxPolygon(minX, minY, maxX, maxY) {

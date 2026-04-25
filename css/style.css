@@ -505,8 +505,8 @@ button {
   resize: vertical;
 }
 
+.copy-btn-row { display: flex; gap: 5px; margin-top: 5px; }
 .copy-btn {
-  margin-top: 5px;
   padding: 3px 10px;
   background: var(--c-surface-2);
   color: var(--c-export-text);
