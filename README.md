@@ -18,7 +18,7 @@ An interactive web map for exploring reef and island features of the **Great Bar
 - Click any feature to inspect its full attributes in the side panel
 - **Shift-click** to build a multi-feature selection — selected features are listed in the side panel with per-row × remove buttons and full export support; shift-click again to deselect; a regular click returns to single-feature mode
 - **Hover tooltip** shows the local name and reef ID (`LOC_NAME_S`) of the feature under the cursor
-- **Feature search** — type a name in the search box at the top of the side panel to get live suggestions; select one to zoom the map to that feature and show its details; ↑↓ Enter Esc keyboard navigation supported
+- **Feature search** — type a name in the search box at the top of the side panel; suggestions show the local name with reef ID (`LOC_NAME_S`) and the unique ID, matching against both local and GBR names so unnamed reefs (U/N) are unambiguous; select one to zoom and show details; ↑↓ Enter Esc keyboard navigation supported
 - **Clear** button resets the drawing, the selection, and the search box simultaneously
 
 ### Visualisation
@@ -37,7 +37,7 @@ An interactive web map for exploring reef and island features of the **Great Bar
 ### Export
 The export panel is available after selecting a single feature, building a shift-click multi-selection, or running a spatial query.
 
-**Always included:** `name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` (centroid, WGS84 EPSG:4326)
+**Always included:** `name`, `loc_name`, `type`, `UNIQUE_ID`, `longitude`, `latitude` (centroid, WGS84 EPSG:4326)
 
 **Optional toggles** — click to activate any combination:
 
