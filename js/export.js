@@ -23,6 +23,7 @@ const Export = {
       const [lon, lat] = c.geometry.coordinates;
       const row = {
         name:      this._name(f),
+        loc_name:  f.properties.LOC_NAME_S || '',
         type:      f.properties.FEAT_NAME  || '',
         unique_id: f.properties.UNIQUE_ID  || '',
         longitude: +lon.toFixed(7),

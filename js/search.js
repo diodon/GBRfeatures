@@ -62,8 +62,9 @@ const Search = {
 
     const matches = App.allFeatures
       .filter(f => {
-        const name = (f.properties.GBR_NAME || f.properties.LOC_NAME_S || '').toLowerCase();
-        return name.includes(q);
+        const p = f.properties;
+        const haystack = ((p.LOC_NAME_S || '') + ' ' + (p.GBR_NAME || '')).toLowerCase();
+        return haystack.includes(q);
       })
       .slice(0, 10);
 
@@ -74,10 +75,12 @@ const Search = {
     }
 
     box.innerHTML = matches.map(f => {
-      const name = f.properties.GBR_NAME || f.properties.LOC_NAME_S || '(unnamed)';
+      const name = f.properties.LOC_NAME_S || f.properties.GBR_NAME || '(unnamed)';
+      const uid  = f.properties.UNIQUE_ID || '';
       const type = f.properties.FEAT_NAME || '';
       return `<div class="suggestion-item" data-fid="${f.properties._fid}">
         <span class="suggestion-name">${this._highlight(name, q)}</span>
+        <span class="suggestion-uid">${this._escape(uid)}</span>
         <span class="suggestion-type">${this._escape(type)}</span>
       </div>`;
     }).join('');
@@ -92,7 +95,7 @@ const Search = {
         const feature = App.featuresById.get(fid);
         if (feature) {
           document.getElementById('search-input').value =
-            feature.properties.GBR_NAME || feature.properties.LOC_NAME_S || '';
+            feature.properties.LOC_NAME_S || feature.properties.GBR_NAME || '';
           this._hide();
           App.zoomToFeature(feature);
         }

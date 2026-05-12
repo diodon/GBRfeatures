@@ -250,6 +250,13 @@ body {
   white-space: nowrap;
 }
 
+.suggestion-uid {
+  font-size: 10px;
+  color: var(--c-accent);
+  flex-shrink: 0;
+  font-family: monospace;
+}
+
 .suggestion-type {
   font-size: 10px;
   color: var(--c-text-subtle);
