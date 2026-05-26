@@ -28,6 +28,7 @@ const Draw = {
   },
 
   _startPolygon() {
+    Measure.clear();
     this._cancelBBox();
     this._draw.deleteAll();
     this._draw.changeMode('draw_polygon');
@@ -38,6 +39,7 @@ const Draw = {
   },
 
   _startBBox() {
+    Measure.clear();
     this._draw.deleteAll();
     this._draw.changeMode('simple_select');
     this._mode = 'bbox';
@@ -182,6 +184,7 @@ const Draw = {
   },
 
   _clear() {
+    Measure.clear();
     this._draw.deleteAll();
     this._cancelBBox();
     this._mode = null;
@@ -193,6 +196,15 @@ const Draw = {
     const input = document.getElementById('search-input');
     if (input) { input.value = ''; document.getElementById('search-clear').classList.remove('visible'); }
     Search._hide();
+  },
+
+  cancelActive() {
+    this._draw.deleteAll();
+    this._cancelBBox();
+    this._mode = null;
+    this._map.getCanvas().style.cursor = '';
+    this._setResultBox('');
+    this._setQueryVisible(false);
   },
 
   _setResultBox(html) {

@@ -46,7 +46,9 @@
       <li><strong>Hover</strong> over a feature to see its local name and reef ID in a tooltip.</li>
       <li><strong>Search</strong> by typing a name in the box at the top of the side panel — suggestions show the local name with reef ID and the unique ID, and match against both the local name and the GBR name; use ↑↓ Enter to navigate, Esc to dismiss.</li>
       <li><strong>Draw &rsaquo; Polygon</strong> or <strong>BBox</strong> to select and export multiple features by area. After drawing, a panel in the lower-left shows the WKT and bounding box coordinates with <strong>Copy WKT</strong> and <strong>Copy BBox</strong> buttons.</li>
-      <li><strong>Clear</strong> resets the drawing, the selection, and the search box.</li>
+      <li><strong>&#8596; Dist</strong> — measure distance: click to place points along a path, double-click to finish. A panel shows the per-segment and total distance in km.</li>
+      <li><strong>&#9711; Area</strong> — measure area: click to place vertices, double-click to close the polygon. A panel shows the area in km² and hectares.</li>
+      <li><strong>Clear</strong> resets the drawing, the selection, the search box, and any active measurement.</li>
       <li><strong>Labels</strong> toggle shows feature names at zoom&nbsp;&ge;&nbsp;9.</li>
       <li><strong>Colour</strong> switches between feature-type colours and a single neutral colour; the legend is shown or hidden automatically.</li>
       <li>The <strong>sun / moon</strong> button in the header toggles between dark and light themes; your preference is remembered across sessions.</li>
@@ -120,11 +122,17 @@
       <div class="sep"></div>
       <button id="btn-query" title="Query features inside drawn shape">&#128270; Query features</button>
       <div class="sep"></div>
+      <button class="btn-tool" id="btn-measure-dist" title="Measure distance — click points, double-click to finish">&#8596; Dist</button>
+      <button class="btn-tool" id="btn-measure-area" title="Measure area — click points, double-click to close">&#9711; Area</button>
+      <div class="sep"></div>
       <button class="btn-danger" id="btn-clear-draw" title="Clear drawing and results">&#10005; Clear</button>
     </div>
 
     <!-- draw output (WKT / bbox) -->
     <div id="draw-result"></div>
+
+    <!-- measure output (distance / area) -->
+    <div id="measure-result"></div>
 
     <!-- legend -->
     <div id="legend">
@@ -184,6 +192,7 @@
 <script src="js/export.js"></script>
 <script src="js/query.js"></script>
 <script src="js/panel.js"></script>
+<script src="js/measure.js"></script>
 <script src="js/draw.js"></script>
 <script src="js/theme.js"></script>
 <script src="js/search.js"></script>

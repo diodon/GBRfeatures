@@ -74,6 +74,7 @@ const App = {
       this._addBasemap('osm');
       document.getElementById('legend').style.display = 'none';
       Draw.init(this.map);
+      Measure.init(this.map);
       Panel.showPlaceholder();
       await this._loadPhase1();
       this._loadPhase2();   // fire-and-forget

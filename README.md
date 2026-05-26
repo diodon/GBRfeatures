@@ -34,6 +34,14 @@ An interactive web map for exploring reef and island features of the **Great Bar
 | **BBox** | Two-click rubber-band rectangle |
 | **Query features** | Finds all GBR features whose centroid falls inside the drawn shape |
 
+### Measure tools
+| Tool | What it does |
+|---|---|
+| **↔ Dist** | Click to place points along a path; double-click to finish. Shows per-segment and total distance in km. |
+| **◯ Area** | Click to place polygon vertices; double-click to close. Shows area in km² and hectares. |
+
+Both tools display results in a floating panel in the lower-left corner with **Copy** buttons. Starting either measure tool clears any active drawing, and vice versa. The **Clear** button resets both draw and measure state.
+
 ### Export
 The export panel is available after selecting a single feature, building a shift-click multi-selection, or running a spatial query.
 
@@ -132,6 +140,7 @@ GBRfeatures/
 │   ├── panel.js            # Side panel: feature details, query results, export UI
 │   ├── query.js            # Spatial filter (centroid-in-polygon)
 │   ├── draw.js             # Draw tools: polygon (GL Draw) + 2-click bbox
+│   ├── measure.js          # Measure tools: distance (polyline) + area (polygon)
 │   ├── search.js           # Live feature-name search with suggestion dropdown
 │   ├── theme.js            # Dark / light theme toggle with localStorage persistence
 │   └── app.js              # MapLibre init, layers, custom controls, events
